@@ -11,6 +11,11 @@ Z.B. in DBeaver die SQL-Befehle aus beiden Dateien `create_table.sql` und `daten
 
 Die INSERT-Befehle wurden aus der alten sogis-DB mit DBeaver exportiert. Ursprünglich handelt es sich um eine View. Für das Entwickeln ist das egal. View muss sowieso angepasst werden (Links zu WebGIS, ...)
 
+## Hints
+- Falls Fehlermeldungen im Browser erscheinen, dass Bootsfaces-Komponenten nicht gefunden werden können, hat ein `./gradlew assemble` in der Konsole geholfen. 
+
+
+
 
 
 
