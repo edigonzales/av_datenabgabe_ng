@@ -2,13 +2,14 @@ plugins {
     id 'org.springframework.boot' version '2.1.3.RELEASE'
     id "org.joinfaces" version "4.0.2"
     id 'java'
+    id "com.bmuschko.docker-remote-api" version "4.6.2"
 }
 
 apply plugin: 'io.spring.dependency-management'
 apply from: "$rootDir/gradle/versioning.gradle"
 
 group = 'ch.so.agi'
-description = """cadastras data disposal"""
+description = """cadastral data disposal"""
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -31,3 +32,90 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
+
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+
+docker {
+    registryCredentials {
+        username = System.env.dockerRegistryUser
+        password = System.env.dockerRegistryPass
+    }
+}
+
+task buildDockerImage(type: DockerBuildImage) {
+    description = "Build docker image."
+    inputDir = project.projectDir
+    tags = ["sogis/cadastral-data-disposal:"+ version, "sogis/cadastral-data-disposal:latest"]
+}
+
+task pushDockerImage_One(dependsOn: 'buildDockerImage', type: DockerPushImage) {
+    description = "Push docker image to hub.docker.com (images are UNTESTED)."
+    imageName = buildDockerImage.tags.get().toArray()[0]
+}
+
+task pushDockerImage_Two(dependsOn: 'buildDockerImage', type: DockerPushImage) {
+    description = "Push docker image to hub.docker.com (images are UNTESTED)."
+    imageName = buildDockerImage.tags.get().toArray()[1]
+}
+
+task pushDockerImages() {
+    description = "Collect all push images tasks."
+}
+
+pushDockerImages.dependsOn {
+    tasks.findAll { task -> task.name.startsWith('pushDockerImage_') }
+}
+
+task buildImage(type:Exec) {
+    def githash = getCheckedOutGitCommitHash()
+    def buildident = version
+    def build_timestamp = getTimestamp()
+
+    commandLine 'docker', 'build',
+                '--no-cache', '--force-rm',
+                '-t', "sogis/cadastral-data-disposal:$buildident",
+                '--label', "cadastral-data-disposal.created=$build_timestamp",
+                '--label', "cadastral-data-disposal.git_commit=$githash",
+                '--label', "cadastral-data-disposal.travis_build=$buildident",
+                '-f', 'Dockerfile',  '.'
+}
+
+task tagLatest(type:Exec, dependsOn: buildImage) {
+    def buildident = version
+    
+    commandLine 'docker', 'tag',
+                "sogis/cadastral-data-disposal:$buildident",
+                "sogis/cadastral-data-disposal:latest"
+}
+
+import java.text.SimpleDateFormat
+
+def getCheckedOutGitCommitHash() {
+    'git log -1 --pretty=%H'.execute().text.trim()
+}
+
+def getTimestamp() {
+    def date = new Date()
+    return date.format('yyyy-MM-dd HH:mm:ss')
+}
+
+task versionTxt()  {
+    outputs.upToDateWhen { false }
+    doLast {
+        new File("version.txt").text = """
+Version: $version
+Revision: ${getCheckedOutGitCommitHash()}
+Buildtime: ${getTimestamp()}
+Application-name: av_datenabgabe
+"""
+    }
+}
+task copyVersionTxt(type: Copy) {
+    from "version.txt"
+    into "src/main/resources/static/"
+}
+copyVersionTxt.dependsOn(versionTxt)
+build.dependsOn(copyVersionTxt)
+classes.dependsOn(copyVersionTxt)
