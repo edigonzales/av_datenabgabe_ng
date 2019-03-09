@@ -1,22 +1,58 @@
 [![Build Status](https://travis-ci.org/sogis/av_datenabgabe_ng.svg?branch=master)](https://travis-ci.org/sogis/av_datenabgabe_ng)
 # av_datenabgabe_ng
-Ablösung https://geoweb.so.ch/av_datenabgabe/
+Ablösung https://geoweb.so.ch/av_datenabgabe/.
 
-## Local dev
-Vagrant-DB hochfahren:
+Inhalt der Dokumentation:
+
+1. Beschreibung
+2. Betriebsdokumention
+3. Entwicklerdokumentation
+4. TODO
+5. Hints
+
+## Beschreibung
+In Absprache mit den Nachführungsgeometern bietet das AGI eine einfache Möglichkeit die Daten der amtlichen Vermessung in verschiedenen Formaten herunterzuladen. Umgesetzt wurde dies mit einer Liste sämtlicher Gemeinden und Links zum Web GIS Client (zwecks PDF-Erstellung) und den Zipfiles mit den verschiedenen Datenformaten (ITF, SHP, DXF). 
+
+Die bestehende Lösung muss abgelöst werden. Dabei handelt es sich wahrscheinlich um eine Provisorium/Wegwerfprodukt, da die Datenabgabe des AGI komplett neu konzipiert wird.
+
+Umgesetzt wurde die neue Lösung mit Spring Boot und JSF.
+
+## Betriebsdokumentation
+Bei jedem Git-Push wird mittels Travis das Docker-Image neu gebildet und als `sogis/cadastral-data-disposal` mit den Tags "Travis-Buildnummer" und "latest" auf Docker Hub abgelegt. Auf der Testumgebung des AGI wird viertelstündlich das latest-Image neu deployed.
+
+### Datenbankverbindungsparameter
+Die Verbindungsparameter werden über Spring Boot Profile gesteuert. Für jede Umgebung gibt es ein `application-[dev|test|prod]properties`. Diese spezielle, zusätzliche Propertiesfile wird im "Haupt"-Propertiesfile mittels Umgebungsvariable ausgewählt: `spring.profiles.active=${AV_DATENABGABE_ENV}`. D.h. es muss die Umgebungsvariable `AV_DATENABGABE_ENV=[dev|test|prod]` vorhanden sein. 
+
+### Docker
 ```
-vagrant up
+docker run -p 8080:8080 -e AV_DATENABGABE_ENV='dev' sogis/cadastral-data-disposal
 ```
 
-Z.B. in DBeaver die SQL-Befehle aus beiden Dateien `create_table.sql` und `datenabgabe_info_v_201903071247.sql` ausführen. 
+## Entwicklerdokumentation
 
-Die INSERT-Befehle wurden aus der alten sogis-DB mit DBeaver exportiert. Ursprünglich handelt es sich um eine View. Für das Entwickeln ist das egal. View muss sowieso angepasst werden (Links zu WebGIS, ...)
+Die Spring-Boot-Applikation:
+
+1. Wandelt den HTTP-Get-Request um in eine Datenbankabfrage.
+2. Das Resultat der Datenbankabfrage wird mit mittels JSF in einer Tabelle gerendert.
+
+### Ausführen des Programmes 
+
+DB lokal:
+- Vagrant-DB hochfahren. Erstmalig ie SQL-Befehle aus beiden Dateien `dev_setup/create_table.sql` und `dev_setup/datenabgabe_info_v_201903071247.sql` ausführen.
+- Umgebungsvariable setzen für das Spring Boot Profil mit den passenden Datenbankverbindungsparametern.
+- Spring Boot Applikation starten
+
 
 ## TODO
-Die View ist anzupassen:
+### Tests
+- version.txt
+- index.xhtml (braucht Datenbank -> Testcontainers)
+
+### View anzupassen:
+- !! Auf welche Datenbank zugreifen? sogis-Privat oder -Global? Oder nach Pub umziehen? Falls für das PDF-Drucke bereits ein Teil der Daten in der Pub sind -> Pub-DB.
 - Kartenlink (done)
 - Datenlinks (-> Andi fragen)
-- sogis-Prod ist noch gar nichts geänder. sogis-Test die Kartenlinks.
+- sogis-Prod ist noch gar nichts geändert. sogis-Test die Kartenlinks.
 
 ```
 CREATE OR REPLACE VIEW av_nfgeometer.datenabgabe_info_v
@@ -53,7 +89,6 @@ GRANT SELECT ON TABLE av_nfgeometer.datenabgabe_info_v TO mspublic;
 GRANT SELECT ON TABLE av_nfgeometer.datenabgabe_info_v TO av_import;
 GRANT SELECT ON TABLE av_nfgeometer.datenabgabe_info_v TO public;
 ```
-
 
 ## Hints
 - Env-Variablen auf macOS, die auch Eclipse resp. die Java-Anwendungen kennen: `launchctl setenv AV_DATENABGABE_ENV test`
