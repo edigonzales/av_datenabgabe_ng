@@ -50,12 +50,12 @@ task buildDockerImage(type: DockerBuildImage) {
     tags = ["sogis/cadastral-data-disposal:"+ version, "sogis/cadastral-data-disposal:latest"]
 }
 
-task pushDockerImage_One(dependsOn: 'buildDockerImage', type: DockerPushImage) {
+task pushDockerImage_One(type: DockerPushImage) {
     description = "Push docker image to hub.docker.com (images are UNTESTED)."
     imageName = buildDockerImage.tags.get().toArray()[0]
 }
 
-task pushDockerImage_Two(dependsOn: 'buildDockerImage', type: DockerPushImage) {
+task pushDockerImage_Two(type: DockerPushImage) {
     description = "Push docker image to hub.docker.com (images are UNTESTED)."
     imageName = buildDockerImage.tags.get().toArray()[1]
 }
