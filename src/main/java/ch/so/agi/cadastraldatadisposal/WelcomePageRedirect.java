@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WelcomePageRedirect implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-      registry.addViewController("/").setViewName("forward:/index.xhtml");
+      registry.addViewController("/").setViewName("redirect:/index.xhtml"); // vs. forward: URL does not change (but POST does not work).
       registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
     }
 }

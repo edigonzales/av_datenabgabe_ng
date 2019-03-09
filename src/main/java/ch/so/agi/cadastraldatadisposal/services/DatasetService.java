@@ -25,9 +25,17 @@ public class DatasetService {
                 "    ogc_fid,\n" + 
                 "    gem_bfs,\n" + 
                 "    gem_name,\n" + 
-                "    lieferdatum\n" + 
+                "    lieferdatum,\n" + 
+                "    nfgeometer,\n" + 
+                "    pdf,\n" + 
+                "    itfch,\n" + 
+                "    itfso,\n" + 
+                "    dxf,\n" + 
+                "    shp\n" + 
                 "FROM\n" + 
                 "    av_nfgeometer.datenabgabe_info_v\n" + 
+                "ORDER BY\n" + 
+                "    gem_name ASC\n" + 
                 ";";
         
         RowMapper<Dataset> mapper = new BeanPropertyRowMapper<Dataset>(Dataset.class);       
