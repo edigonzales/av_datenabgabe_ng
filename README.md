@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/sogis/av_datenabgabe.svg?branch=master)](https://travis-ci.org/sogis/av_datenabgabe)
+[![Build Status](https://travis-ci.org/sogis/av_datenabgabe_ng.svg?branch=master)](https://travis-ci.org/sogis/av_datenabgabe_ng)
 # av_datenabgabe_ng
 Ablösung https://geoweb.so.ch/av_datenabgabe/
 
