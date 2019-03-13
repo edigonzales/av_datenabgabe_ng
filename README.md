@@ -48,12 +48,7 @@ DB lokal:
 - version.txt
 - index.xhtml (braucht Datenbank -> Testcontainers)
 
-### View anzupassen:
-- !! Auf welche Datenbank zugreifen? sogis-Privat oder -Global? Oder nach Pub umziehen? Falls für das PDF-Drucke bereits ein Teil der Daten in der Pub sind -> Pub-DB.
-- Kartenlink (done)
-- Datenlinks (-> Andi fragen)
-- sogis-Prod ist noch gar nichts geändert. sogis-Test die Kartenlinks.
-
+### View (Intranet-sogis-DB):
 ```
 CREATE OR REPLACE VIEW av_nfgeometer.datenabgabe_info_v
 AS SELECT b.ogc_fid, b.gem_bfs, btrim(c.gmde_name::text) AS gem_name, 
