@@ -48,6 +48,10 @@ task buildDockerImage(type: DockerBuildImage) {
     description = "Build docker image."
     inputDir = project.projectDir
     tags = ["sogis/cadastral-data-disposal:"+ version, "sogis/cadastral-data-disposal:latest"]
+    labels = ["cadastral-data-disposal.created": new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), 
+            "cadastral-data-disposal.git_commit":  getCheckedOutGitCommitHash(), 
+            "cadastral-data-disposal.travis_build": version]
+    
 }
 
 task pushDockerImage_One(type: DockerPushImage) {
@@ -66,28 +70,6 @@ task pushDockerImages() {
 
 pushDockerImages.dependsOn {
     tasks.findAll { task -> task.name.startsWith('pushDockerImage_') }
-}
-
-task buildImage(type:Exec) {
-    def githash = getCheckedOutGitCommitHash()
-    def buildident = version
-    def build_timestamp = getTimestamp()
-
-    commandLine 'docker', 'build',
-                '--no-cache', '--force-rm',
-                '-t', "sogis/cadastral-data-disposal:$buildident",
-                '--label', "cadastral-data-disposal.created=$build_timestamp",
-                '--label', "cadastral-data-disposal.git_commit=$githash",
-                '--label', "cadastral-data-disposal.travis_build=$buildident",
-                '-f', 'Dockerfile',  '.'
-}
-
-task tagLatest(type:Exec, dependsOn: buildImage) {
-    def buildident = version
-    
-    commandLine 'docker', 'tag',
-                "sogis/cadastral-data-disposal:$buildident",
-                "sogis/cadastral-data-disposal:latest"
 }
 
 import java.text.SimpleDateFormat
