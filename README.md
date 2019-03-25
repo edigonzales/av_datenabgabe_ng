@@ -21,11 +21,11 @@ Umgesetzt wurde die neue Lösung mit Spring Boot und JSF.
 Bei jedem Git-Push wird mittels Travis das Docker-Image neu gebildet und als `sogis/cadastral-data-disposal` mit den Tags "Travis-Buildnummer" und "latest" auf Docker Hub abgelegt. Auf der Testumgebung des AGI wird viertelstündlich das latest-Image neu deployed.
 
 ### Datenbankverbindungsparameter
-Die Verbindungsparameter werden über Spring Boot Profile gesteuert. Für jede Umgebung gibt es ein `application-[dev|test|prod]properties`. Diese spezielle, zusätzliche Propertiesfile wird im "Haupt"-Propertiesfile mittels Umgebungsvariable ausgewählt: `spring.profiles.active=${AV_DATENABGABE_ENV}`. D.h. es muss die Umgebungsvariable `AV_DATENABGABE_ENV=[dev|test|prod]` vorhanden sein. 
+Die Verbindungsparameter werden über Spring Boot Profile gesteuert. Für jede Umgebung gibt es ein `application-[dev|test|prod]properties`. Diese spezielle, zusätzliche Propertiesfile kann mit der speziellen Spring-Boot-Umgebungsvariable `SPRING_PROFILES_ACTIVE` gesteuert werden: `SPRING_PROFILES_ACTIVE=[dev|test|prod]` vorhanden sein. 
 
 ### Docker
 ```
-docker run -p 8080:8080 -e AV_DATENABGABE_ENV='dev' sogis/cadastral-data-disposal
+docker run -p 8080:8080 -e "SPRING_PROFILES_ACTIVE=dev" sogis/cadastral-data-disposal
 ```
 
 ## Entwicklerdokumentation
