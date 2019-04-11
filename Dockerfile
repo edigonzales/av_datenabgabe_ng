@@ -1,4 +1,4 @@
-FROM java:8
+FROM adoptopenjdk/openjdk11:jdk-11.0.2.9
 VOLUME /tmp
 
 ENV USER_NAME av_datenabgabe
