@@ -1,17 +1,16 @@
-FROM adoptopenjdk/openjdk11:jdk-11.0.2.9
-VOLUME /tmp
+FROM adoptopenjdk/openjdk11:latest
 
-ENV USER_NAME av_datenabgabe
-ENV APP_HOME /home/$USER_NAME/app
+EXPOSE 8080
 
-RUN useradd -ms /bin/bash $USER_NAME
-RUN mkdir $APP_HOME
+WORKDIR /home/av_datenabgabe
 
-ADD build/libs/cadastral-data-disposal*.jar $APP_HOME/app.jar
-RUN chown $USER_NAME $APP_HOME/app.jar
+ARG DEPENDENCY=build/dependency
+COPY ${DEPENDENCY}/BOOT-INF/lib /home/av_datenabgabe/app/lib
+COPY ${DEPENDENCY}/META-INF /home/av_datenabgabe/app/META-INF
+COPY ${DEPENDENCY}/BOOT-INF/classes /home/av_datenabgabe/app
+RUN chown -R 1001:0 /home/av_datenabgabe && \
+    chmod -R g=u /home/av_datenabgabe
 
-USER $USER_NAME
-WORKDIR $APP_HOME
-RUN bash -c 'touch app.jar'
+USER 1001
 
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","app.jar"]
+ENTRYPOINT ["java","-cp","/home/av_datenabgabe/app:/home/av_datenabgabe/app/lib/*","ch.so.agi.cadastraldatadisposal.CadastralDataDisposalApplication"]

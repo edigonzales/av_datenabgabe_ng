@@ -23,16 +23,27 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.joinfaces:jsf-spring-boot-starter'
-    //implementation 'org.joinfaces:bootsfaces-spring-boot-starter'
-    implementation 'org.joinfaces:primefaces-spring-boot-starter'
-    implementation 'javax.enterprise:cdi-api:2.0.SP1'
-    
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    runtime 'org.springframework.boot:spring-boot-actuator' 
     runtimeOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
+// Slighly better ("thinner") docker image handling
+task deleteFilesJarDir(type: Delete) {
+    delete fileTree("${buildDir}/dependency/")//.listFiles()
+    delete file("${buildDir}/dependency/")
+}
+
+task unzipJar(type: Copy) {
+    from zipTree(file("${buildDir}/libs/cadastral-data-disposal-"+version+".jar"))
+    into file("${buildDir}/dependency/")
+}
+unzipJar.dependsOn(deleteFilesJarDir)
+bootJar.finalizedBy(unzipJar)
+
+// Build docker image
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
