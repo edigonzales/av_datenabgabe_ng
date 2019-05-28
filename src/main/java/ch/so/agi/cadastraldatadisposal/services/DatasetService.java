@@ -39,11 +39,7 @@ public class DatasetService {
                 ";";
 
         RowMapper<Dataset> mapper = new BeanPropertyRowMapper<Dataset>(Dataset.class);       
-        List<Dataset> resultList = jdbcTemplate.query(sql, mapper);
-        
-        log.info("********");
-        log.info(String.valueOf(resultList.get(0).getLieferdatum()));
-        
+        List<Dataset> resultList = jdbcTemplate.query(sql, mapper);        
         return resultList;
     }
 }
