@@ -37,10 +37,9 @@ public class DatasetService {
                 "ORDER BY\n" + 
                 "    gem_name ASC\n" + 
                 ";";
-        
+
         RowMapper<Dataset> mapper = new BeanPropertyRowMapper<Dataset>(Dataset.class);       
-        List<Dataset> resultList = jdbcTemplate.query(sql, mapper);
-        
+        List<Dataset> resultList = jdbcTemplate.query(sql, mapper);        
         return resultList;
     }
 }
