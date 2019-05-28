@@ -24,14 +24,10 @@ public class MainController {
     DatasetService dataSetService;
 
     List<Dataset> lstDatasets = new ArrayList<Dataset>();
-
-    @PostConstruct
-    public void init() throws Exception {
-        lstDatasets = dataSetService.getDatasets();
-    }
     
     @GetMapping("/")
     public String getDataset(Model model) {
+        lstDatasets = dataSetService.getDatasets();
         model.addAttribute("datasets", lstDatasets);
         return "dataset.table.html";
     }
