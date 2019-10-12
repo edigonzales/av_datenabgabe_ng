@@ -1,10 +1,20 @@
 package ch.so.agi.cadastraldatadisposal.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.client.RestTemplate;
+
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import ch.so.agi.cadastraldatadisposal.models.Dataset;
 import ch.so.agi.cadastraldatadisposal.models.Feature;
@@ -13,9 +23,15 @@ import ch.so.agi.cadastraldatadisposal.models.Response;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
+
+import java.text.SimpleDateFormat;
+
 import static java.util.stream.Collectors.collectingAndThen;
 
 import javax.annotation.PostConstruct;
@@ -27,25 +43,58 @@ import org.slf4j.LoggerFactory;
 public class MainController {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-//    @Autowired
-//    DatasetService dataSetService;
+    @Value("${app.dataServiceUrl}")
+    private String dataServiceUrl;
 
+    @Value("${app.pdfMapUrl}")
+    private String pdfMapUrl;
+
+    @Value("${app.s3BaseUrl}")
+    private String s3BaseUrl;
+
+    @Value("${app.itfsoBucketName}")
+    private String itfsoBucketName;
+
+    @Value("${app.itfchBucketName}")
+    private String itfchBucketName;
+
+    @Value("${app.dxfBucketName}")
+    private String dxfBucketName;
+    
+    @Value("${app.shpUrl}")
+    private String shpUrl;
+    
+    @Value("${app.awsAccessKey}")
+    private String awsAccessKey;
+
+    @Value("${app.awsSecretKey}")
+    private String awsSecretKey;
+    
     List<Dataset> lstDatasets = new ArrayList<Dataset>();
     
+    private AWSCredentials credentials;
     
-    //https://geo-i.so.ch/api/data/v1/ch.so.agi.av.nachfuehrungsgemeinden.data/
-    
-    //@GetMapping("/")
-    public String getDataset(Model model) {
-//        lstDatasets = dataSetService.getDatasets();
-//        model.addAttribute("datasets", lstDatasets);
-        return "dataset.table.html";
+    @PostConstruct
+    public void doLog() {
+        credentials = new BasicAWSCredentials(awsAccessKey, awsSecretKey);
     }
     
     @GetMapping("/")     
     public String show(Model model) {
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+
+        AmazonS3 s3client = AmazonS3ClientBuilder
+                .standard()
+                .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                .withRegion(Regions.EU_CENTRAL_1)
+                .build();
+        
+        ObjectListing objectListing = s3client.listObjects(itfsoBucketName);        
+        Map<String, Date> objectMap = objectListing.getObjectSummaries().stream().collect(
+                Collectors.toMap(S3ObjectSummary::getKey, S3ObjectSummary::getLastModified));
+
         RestTemplate restTemplate = new RestTemplate();
-        Response response = restTemplate.getForObject("https://geo-i.so.ch/api/data/v1/ch.so.agi.av.nachfuehrungsgemeinden.data/", Response.class);
+        Response response = restTemplate.getForObject(dataServiceUrl, Response.class);
 
         ArrayList<Dataset> datasets = response.getFeatures().stream()
             .sorted((f1, f2) -> f1.getProperties().getGemeindename().compareTo(f2.getProperties().getGemeindename()))
@@ -54,6 +103,20 @@ public class MainController {
                 Properties p = f.getProperties();
                 dataset.setGem_name(p.getGemeindename());
                 dataset.setGem_bfs(p.getBfsnr());
+                
+                String key = String.valueOf(p.getBfsnr())+"00.itf";
+                Date date = objectMap.get(key);
+                if (date == null) {
+                    log.error("key not found: " + key);
+                } else {
+                    dataset.setLieferdatum(format.format(date));  
+                }
+                
+                dataset.setPdf(pdfMapUrl.replace("{{BFS_NR}}", String.valueOf(p.getBfsnr())));
+                dataset.setItfch(s3BaseUrl + itfchBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.itf");
+                dataset.setItfso(s3BaseUrl + itfsoBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.itf");
+                dataset.setDxf(s3BaseUrl + dxfBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.dxf");
+                dataset.setShp(shpUrl);
                 dataset.setNfgeometer(p.getNfgVorname() + " " + p.getNfgName() + " (" + p.getFirma() + ")");
                 return dataset;
             })
@@ -62,6 +125,4 @@ public class MainController {
         model.addAttribute("datasets", datasets);
         return "dataset.table.html";
     }
-
-    
 }
