@@ -43,10 +43,10 @@
                         <td th:text="${dataset.lieferdatum}">23</td>
                         <td th:text="${dataset.nfgeometer}">AVE N</td>
                         <td><a th:href="${dataset.pdf}" target="_blank"><img th:src="@{/images/pdficon_small.png}"/></a></td>
-                        <td><a th:href="'https://' + ${dataset.itfch}"><img th:src="@{/images/zip_icon.png}"/></a></td>
-                        <td><a th:href="'https://' + ${dataset.itfso}"><img th:src="@{/images/zip_icon.png}"/></a></td>
-                        <td><a th:href="'https://' + ${dataset.dxf}"><img th:src="@{/images/zip_icon.png}"/></a></td>
-                        <td><a th:href="'https://' + ${dataset.shp}"><img th:src="@{/images/zip_icon.png}"/></a></td>
+                        <td><a th:href="${dataset.itfch}"><img th:src="@{/images/zip_icon.png}"/></a></td>
+                        <td><a th:href="${dataset.itfso}"><img th:src="@{/images/zip_icon.png}"/></a></td>
+                        <td><a th:href="${dataset.dxf}"><img th:src="@{/images/zip_icon.png}"/></a></td>
+                        <td><a th:href="${dataset.shp}"><img th:src="@{/images/zip_icon.png}"/></a></td>
                     </tr>
                 </tbody>
             </table>

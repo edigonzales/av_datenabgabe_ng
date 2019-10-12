@@ -1,6 +1,6 @@
 plugins {
-    id 'org.springframework.boot' version '2.1.3.RELEASE'
-    id "org.joinfaces" version "4.0.2"
+    id 'org.springframework.boot' version '2.1.9.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'    
     id 'java'
     id "com.bmuschko.docker-remote-api" version "4.6.2"
 }
@@ -17,14 +17,17 @@ targetCompatibility = '1.8'
 repositories {
     jcenter()
     mavenCentral()
-    maven { url "http://repository.primefaces.org" }
+    //maven { url "http://repository.primefaces.org" }
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    runtime 'org.springframework.boot:spring-boot-actuator' 
+    compile group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.11.650'
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.650'
+    //compile group: 'com.vividsolutions', name: 'jts-core', version: '1.14.0'
+    //compile group: 'com.bedatadriven', name: 'jackson-datatype-jts', version: '2.4' 
+    runtime 'org.springframework.boot:spring-boot-starter-actuator' 
     runtimeOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
