@@ -83,6 +83,7 @@ public class MainController {
     public String show(Model model) {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 
+        log.info("Start S3 request");
         AmazonS3 s3client = AmazonS3ClientBuilder
                 .standard()
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
@@ -92,7 +93,9 @@ public class MainController {
         ObjectListing objectListing = s3client.listObjects(itfsoBucketName);        
         Map<String, Date> objectMap = objectListing.getObjectSummaries().stream().collect(
                 Collectors.toMap(S3ObjectSummary::getKey, S3ObjectSummary::getLastModified));
+        log.info("End S3 request");
 
+        log.info("Start data service request");
         RestTemplate restTemplate = new RestTemplate();
         Response response = restTemplate.getForObject(dataServiceUrl, Response.class);
 
@@ -113,15 +116,16 @@ public class MainController {
                 }
                 
                 dataset.setPdf(pdfMapUrl.replace("{{BFS_NR}}", String.valueOf(p.getBfsnr())));
-                dataset.setItfch(s3BaseUrl + itfchBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.itf");
-                dataset.setItfso(s3BaseUrl + itfsoBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.itf");
-                dataset.setDxf(s3BaseUrl + dxfBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.dxf");
+                dataset.setItfch(s3BaseUrl + itfchBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.itf.zip");
+                dataset.setItfso(s3BaseUrl + itfsoBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.itf.zip");
+                dataset.setDxf(s3BaseUrl + dxfBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.dxf.zip");
                 dataset.setShp(shpUrl);
                 dataset.setNfgeometer(p.getNfgVorname() + " " + p.getNfgName() + " (" + p.getFirma() + ")");
                 return dataset;
             })
             .collect(collectingAndThen(toList(), ArrayList<Dataset>::new));
-        
+        log.info("End data service request");
+
         model.addAttribute("datasets", datasets);
         return "dataset.table.html";
     }

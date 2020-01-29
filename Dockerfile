@@ -13,4 +13,4 @@ RUN chown -R 1001:0 /home/av_datenabgabe && \
 
 USER 1001
 
-ENTRYPOINT ["java","-cp","/home/av_datenabgabe/app:/home/av_datenabgabe/app/lib/*","ch.so.agi.cadastraldatadisposal.CadastralDataDisposalApplication"]
+ENTRYPOINT ["java","-Xmx768m", "-cp","/home/av_datenabgabe/app:/home/av_datenabgabe/app/lib/*","ch.so.agi.cadastraldatadisposal.CadastralDataDisposalApplication"]
