@@ -107,7 +107,7 @@ public class MainController {
                 dataset.setGem_name(p.getGemeindename());
                 dataset.setGem_bfs(p.getBfsnr());
                 
-                String key = String.valueOf(p.getBfsnr())+"00.itf";
+                String key = String.valueOf(p.getBfsnr())+"00.zip";
                 Date date = objectMap.get(key);
                 if (date == null) {
                     log.error("key not found: " + key);
@@ -117,7 +117,7 @@ public class MainController {
                 
                 dataset.setPdf(pdfMapUrl.replace("{{BFS_NR}}", String.valueOf(p.getBfsnr())));
                 dataset.setItfch(s3BaseUrl + itfchBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.itf.zip");
-                dataset.setItfso(s3BaseUrl + itfsoBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.itf.zip");
+                dataset.setItfso(s3BaseUrl + itfsoBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.zip");
                 dataset.setDxf(s3BaseUrl + dxfBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.dxf.zip");
                 dataset.setShp(shpUrl);
                 dataset.setNfgeometer(p.getNfgVorname() + " " + p.getNfgName() + " (" + p.getFirma() + ")");
