@@ -61,6 +61,9 @@ public class MainController {
     @Value("${app.dxfBucketName}")
     private String dxfBucketName;
     
+    @Value("${app.mopublicBucketName}")
+    private String mopublicBucketName;
+    
     @Value("${app.shpUrl}")
     private String shpUrl;
     
@@ -119,7 +122,7 @@ public class MainController {
                 dataset.setItfch(s3BaseUrl + itfchBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.itf.zip");
                 dataset.setItfso(s3BaseUrl + itfsoBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.zip");
                 dataset.setDxf(s3BaseUrl + dxfBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.dxf.zip");
-                dataset.setShp(shpUrl);
+                dataset.setShp(s3BaseUrl + mopublicBucketName + "/"+ String.valueOf(p.getBfsnr()) + "_shp.zip");
                 dataset.setNfgeometer(p.getNfgVorname() + " " + p.getNfgName() + " (" + p.getFirma() + ")");
                 return dataset;
             })
