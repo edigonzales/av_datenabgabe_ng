@@ -64,9 +64,6 @@ public class MainController {
     @Value("${app.mopublicBucketName}")
     private String mopublicBucketName;
     
-    @Value("${app.shpUrl}")
-    private String shpUrl;
-    
     @Value("${app.awsAccessKey}")
     private String awsAccessKey;
 
