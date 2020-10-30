@@ -118,7 +118,7 @@ public class MainController {
                 dataset.setPdf(pdfMapUrl.replace("{{BFS_NR}}", String.valueOf(p.getBfsnr())));
                 dataset.setItfch(s3BaseUrl + itfchBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.itf.zip");
                 dataset.setItfso(s3BaseUrl + itfsoBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.zip");
-                dataset.setDxf(s3BaseUrl + dxfBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.dxf.zip");
+                dataset.setDxf(s3BaseUrl + dxfBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.zip");
                 dataset.setShp(s3BaseUrl + mopublicBucketName + "/"+ String.valueOf(p.getBfsnr()) + "_shp.zip");
                 dataset.setNfgeometer(p.getNfgVorname() + " " + p.getNfgName() + " (" + p.getFirma() + ")");
                 return dataset;
