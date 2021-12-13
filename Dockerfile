@@ -13,4 +13,7 @@ RUN chown -R 1001:0 /home/av_datenabgabe && \
 
 USER 1001
 
+#Log4j 2 CVE-2021-44228
+ENV LOG4J_FORMAT_MSG_NO_LOOKUPS=true
+
 ENTRYPOINT ["java","-XX:MaxRAMPercentage=80.0", "-cp","/home/av_datenabgabe/app:/home/av_datenabgabe/app/lib/*","ch.so.agi.cadastraldatadisposal.CadastralDataDisposalApplication"]
