@@ -42,6 +42,27 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+graalvmNative {
+    binaries {
+        main {
+            imageName = 'pdf4oereb' // The name of the native image, defaults to the project name
+            mainClass = 'ch.so.agi.oereb.pdf4oereb.App' // The main class to use, defaults to the application.mainClass
+            debug = true // Determines if debug info should be generated, defaults to false
+            verbose = true // Add verbose output, defaults to false
+            fallback = false // Sets the fallback mode of native-image, defaults to false
+
+            // Advanced options
+            //buildArgs.add('-H:Extra') 
+            jvmArgs.add("-Djava.awt.headless=false")
+
+            agent {
+                enabled = true 
+            }
+        }
+    }
+}
+
+
 /*
 springAot {
     //mode = AotMode.NATIVE_AGENT
@@ -52,12 +73,14 @@ springAot {
     removeJmxSupport = true
     verify = true
 }
+*/
 
 nativeBuild {
     verbose = true
     fallback = false
+    jvmArgs.add("--libc=musl")
 }
-*/
+
 
 import java.text.SimpleDateFormat
 
