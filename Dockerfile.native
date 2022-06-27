@@ -11,4 +11,6 @@ COPY --chown=1001:root build/native/nativeCompile/cadastral-data-disposal /work/
 EXPOSE 8080
 USER 1001
 
+ENV LOG4J_FORMAT_MSG_NO_LOOKUPS=true
+
 CMD ["./application"]

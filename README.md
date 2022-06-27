@@ -24,7 +24,7 @@ Jedoch erzeugt auch `aotTest` keinen Eintrag für Dataset.class in _reflect-conf
 Bei jedem Git-Push wird mittels Travis das Docker-Image neu gebildet und als `sogis/cadastral-data-disposal` mit den Tags "Travis-Buildnummer" und "latest" auf Docker Hub abgelegt. Auf der Testumgebung des AGI wird viertelstündlich das latest-Image neu deployed.
 
 ### Credentials / Config
-Mittels Spring Boot `application.properties` resp. ENV-Variablen (AWS-Keys: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY).
+Mittels Spring Boot `application.properties` resp. ENV-Variablen. Es müssen mindestens die ENV-Variablen AWS_ACCESS_KEY_ID und AWS_SECRET_ACCESS_KEY gesetzt werden. Standardmässig zeigt SPRING_PROFILES_ACTIVE auf "prod" und muss bei Bedarf auch gesetzt werden. Alle anderen Einstellungen sind in den entsprechenden Properties-Dateien (könne jedoch überschrieben werden).
 
 ### Java
 
@@ -32,7 +32,7 @@ Mittels Spring Boot `application.properties` resp. ENV-Variablen (AWS-Keys: AWS_
 
 ### Docker
 ```
-docker run -p 8080:8080 sogis/cadastral-data-disposal
+docker run -p 8080:8080 -e AWS_ACCESS_KEY_ID=XXXXXX -e AWS_SECRET_ACCESS_KEY=YYYYYY sogis/cadastral-data-disposal
 ```
 
 ## TODO
