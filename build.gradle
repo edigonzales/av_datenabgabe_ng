@@ -18,6 +18,10 @@ compileJava {
     options.compilerArgs.addAll(['--release', '17'])
 }
 
+bootJar {
+   archiveName = baseName + "-" + version + "-exec.jar"
+}
+
 repositories {
     maven { url 'https://repo.spring.io/release' }
     mavenCentral()

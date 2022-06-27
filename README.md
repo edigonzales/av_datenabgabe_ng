@@ -1,14 +1,6 @@
-[![Build Status](https://travis-ci.org/sogis/av_datenabgabe_ng.svg?branch=master)](https://travis-ci.org/sogis/av_datenabgabe_ng)
+[![CI/CD](https://github.com/sogis/av_datenabgabe_ng/actions/workflows/main.yml/badge.svg)](https://github.com/sogis/av_datenabgabe_ng/actions/workflows/main.yml)
 # av_datenabgabe_ng
 Ablösung https://geoweb.so.ch/av_datenabgabe/.
-
-Inhalt der Dokumentation:
-
-1. Beschreibung
-2. Betriebsdokumention
-3. Entwicklerdokumentation
-4. TODO
-5. Hints
 
 ## Beschreibung
 In Absprache mit den Nachführungsgeometern bietet das AGI eine einfache Möglichkeit die Daten der amtlichen Vermessung in verschiedenen Formaten herunterzuladen. Umgesetzt wurde dies mit einer Liste sämtlicher Gemeinden und Links zum Web GIS Client (zwecks PDF-Erstellung) und den Zipfiles mit den verschiedenen Datenformaten (ITF, SHP, DXF). 
@@ -28,8 +20,6 @@ Umgesetzt wurde die neue Lösung mit Spring Boot. Als Datenquelle wird der Data-
 Jedoch erzeugt auch `aotTest` keinen Eintrag für Dataset.class in _reflect-config.json_. Aus diesem Grund wird die Klasse explizit mit `@TypeHint` hinzugefügt.
 
 
-
-
 ## Betriebsdokumentation
 Bei jedem Git-Push wird mittels Travis das Docker-Image neu gebildet und als `sogis/cadastral-data-disposal` mit den Tags "Travis-Buildnummer" und "latest" auf Docker Hub abgelegt. Auf der Testumgebung des AGI wird viertelstündlich das latest-Image neu deployed.
 
@@ -45,9 +35,5 @@ Mittels Spring Boot `application.properties` resp. ENV-Variablen (AWS-Keys: AWS_
 docker run -p 8080:8080 sogis/cadastral-data-disposal
 ```
 
-## Entwicklerdokumentation
-
-FIXME
-
 ## TODO
-* Tests
+* More Tests
