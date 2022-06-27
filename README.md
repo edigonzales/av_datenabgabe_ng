@@ -17,7 +17,7 @@ Umgesetzt wurde die neue Lösung mit Spring Boot. Als Datenquelle wird der Data-
 ./gradlew clean aotTest nativeCompile -i
 ```
 
-Jedoch erzeugt auch `aotTest` keinen Eintrag für Dataset.class in _reflect-config.json_. Aus diesem Grund wird die Klasse explizit mit `@TypeHint` hinzugefügt.
+Jedoch erzeugt auch `aotTest` keinen Eintrag für Dataset.class in _reflect-config.json_. Aus diesem Grund wird die Klasse explizit mit `@TypeHint` hinzugefügt. Man kann nicht für ein Musl-Image kompilieren. Fehlermeldungen sagen mir nichts. Aus diesem Grund wir ein glibc-Image auf Basis ubi-minimal (Red Hat) verwendet. Es wird kein User hinzugefügt, auch wenn ich das tendenziell wieder eher mache, da gewisse Container-Orchestrierer einen wollen. Openshift jedoch nicht.
 
 
 ## Betriebsdokumentation

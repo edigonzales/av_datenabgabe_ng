@@ -47,7 +47,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: ${{ failure() }}
         with:
-          name: reports-native
+          name: reports
           path: build/reports/tests/
 
       - name: Set up QEMU for amd64
@@ -129,7 +129,7 @@ jobs:
   #     - uses: actions/upload-artifact@v2
   #       if: ${{ failure() }}
   #       with:
-  #         name: reports-jvm
+  #         name: reports
   #         path: build/reports/tests/
 
   #     - name: Set up QEMU for amd64 and arm64
