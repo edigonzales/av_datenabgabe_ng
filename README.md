@@ -17,8 +17,7 @@ Umgesetzt wurde die neue Lösung mit Spring Boot. Als Datenquelle wird der Data-
 ./gradlew clean aotTest nativeCompile -i
 ```
 
-Jedoch erzeugt auch `aotTest` keinen Eintrag für Dataset.class in _reflect-config.json_. Aus diesem Grund wird die Klasse explizit mit `@TypeHint` hinzugefügt. Man kann nicht für ein Musl-Image kompilieren. Fehlermeldungen sagen mir nichts. Aus diesem Grund wir ein glibc-Image auf Basis ubi-minimal (Red Hat) verwendet. Es wird kein User hinzugefügt, auch wenn ich das tendenziell wieder eher mache, da gewisse Container-Orchestrierer einen wollen. Openshift jedoch nicht.
-
+Jedoch erzeugt auch `aotTest` keinen Eintrag für Dataset.class in _reflect-config.json_. Aus diesem Grund wird die Klasse explizit mit `@TypeHint` hinzugefügt. Es wird für ein Musl-Alpine-Image kompiliert. Falls man ein glibc-Image verwenden will (z.B. quarkus-micro auf Basis ubi-micro) muss in der Github Action die musl-Ooption entfernt werden und im build.gradle --static und --libc=musl.
 
 ## Betriebsdokumentation
 Bei jedem Git-Push wird mittels Travis das Docker-Image neu gebildet und als `sogis/cadastral-data-disposal` mit den Tags "Travis-Buildnummer" und "latest" auf Docker Hub abgelegt. Auf der Testumgebung des AGI wird viertelstündlich das latest-Image neu deployed.
