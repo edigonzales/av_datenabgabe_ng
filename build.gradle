@@ -11,11 +11,11 @@ apply from: "$rootDir/gradle/versioning.gradle"
 group = 'ch.so.agi'
 description = """cadastral data disposal"""
 
-sourceCompatibility = '11'
-targetCompatibility = '11'
+sourceCompatibility = '17'
+targetCompatibility = '17'
 
 compileJava {
-    options.compilerArgs.addAll(['--release', '11'])
+    options.compilerArgs.addAll(['--release', '17'])
 }
 
 repositories {

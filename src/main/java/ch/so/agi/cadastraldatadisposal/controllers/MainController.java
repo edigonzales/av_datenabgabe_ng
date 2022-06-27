@@ -58,12 +58,6 @@ public class MainController {
     @Value("${app.mopublicBucketName}")
     private String mopublicBucketName;
     
-    @Value("${app.awsAccessKey}")
-    private String awsAccessKey;
-
-    @Value("${app.awsSecretKey}")
-    private String awsSecretKey;
-    
     List<Dataset> lstDatasets = new ArrayList<Dataset>();
     
     private S3Client s3;
@@ -101,41 +95,40 @@ public class MainController {
         RestTemplate restTemplate = new RestTemplate();
         Response response = restTemplate.getForObject(dataServiceUrl, Response.class);
 
-//        ArrayList<Dataset> datasets = response.getFeatures().stream()
-//            .sorted((f1, f2) -> f1.getProperties().getGemeindename().compareTo(f2.getProperties().getGemeindename()))
-//            .map(f -> {
-//                Dataset dataset = new Dataset();
-//                Properties p = f.getProperties();
-//                dataset.setGem_name(p.getGemeindename());
-//                dataset.setGem_bfs(p.getBfsnr());
-//                
-//                String key = String.valueOf(p.getBfsnr())+"00.zip";
-//                Date date = objectMap.get(key);
-//                if (date == null) {
-//                    log.error("key not found: " + key);
-//                } else {
-//                    dataset.setLieferdatum(format.format(date));  
-//                }
-//                
-//                dataset.setPdf(pdfMapUrl.replace("{{BFS_NR}}", String.valueOf(p.getBfsnr())));
-//                dataset.setItfch(s3BaseUrl + itfchBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.itf.zip");
-//                dataset.setItfso(s3BaseUrl + itfsoBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.zip");
-//                dataset.setDxf(s3BaseUrl + dxfBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.zip");
-//                dataset.setShp(s3BaseUrl + mopublicBucketName + "/"+ String.valueOf(p.getBfsnr()) + "_shp.zip");
-//                dataset.setNfgeometer(p.getNfgVorname() + " " + p.getNfgName() + " (" + p.getFirma() + ")");
-//                
-//                System.out.println("****"+dataset.getGem_name());
-//                return dataset;
-//            })
-//            .collect(collectingAndThen(toList(), ArrayList<Dataset>::new));
+        ArrayList<Dataset> datasets = response.getFeatures().stream()
+            .sorted((f1, f2) -> f1.getProperties().getGemeindename().compareTo(f2.getProperties().getGemeindename()))
+            .map(f -> {
+                Dataset dataset = new Dataset();
+                Properties p = f.getProperties();
+                dataset.setGem_name(p.getGemeindename());
+                dataset.setGem_bfs(p.getBfsnr());
+                
+                String key = String.valueOf(p.getBfsnr())+"00.zip";
+                Date date = objectMap.get(key);
+                if (date == null) {
+                    log.error("key not found: " + key);
+                } else {
+                    dataset.setLieferdatum(format.format(date));  
+                }
+                
+                dataset.setPdf(pdfMapUrl.replace("{{BFS_NR}}", String.valueOf(p.getBfsnr())));
+                dataset.setItfch(s3BaseUrl + itfchBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.itf.zip");
+                dataset.setItfso(s3BaseUrl + itfsoBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.zip");
+                dataset.setDxf(s3BaseUrl + dxfBucketName + "/"+ String.valueOf(p.getBfsnr()) + "00.zip");
+                dataset.setShp(s3BaseUrl + mopublicBucketName + "/"+ String.valueOf(p.getBfsnr()) + "_shp.zip");
+                dataset.setNfgeometer(p.getNfgVorname() + " " + p.getNfgName() + " (" + p.getFirma() + ")");
+                
+                return dataset;
+            })
+            .collect(collectingAndThen(toList(), ArrayList<Dataset>::new));
         
-        ArrayList<Dataset> datasets = new ArrayList<>();
-        Dataset dataset =  new Dataset();
-        dataset.setLieferdatum("23.10.1999");
-        dataset.setNfgeometer("gaaaaaaa");
-        datasets.add(dataset);
-
-        System.out.println("***"+datasets.size());
+//        ArrayList<Dataset> datasets = new ArrayList<>();
+//        Dataset dataset =  new Dataset();
+//        dataset.setLieferdatum("23.10.1999");
+//        dataset.setNfgeometer("gaaaaaaa");
+//        datasets.add(dataset);
+//
+//        System.out.println("***"+datasets.size());
         log.info("End data service request");
 
         model.addAttribute("datasets", datasets);

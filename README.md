@@ -17,11 +17,28 @@ Die bestehende Lösung muss abgelöst werden. Dabei handelt es sich wahrscheinli
 
 Umgesetzt wurde die neue Lösung mit Spring Boot. Als Datenquelle wird der Data-Service-Layer `ch.so.agi.av.nachfuehrungsgemeinden.data` und die Metainformationen aus dem `ch.so.agi.av.dm01avso24lv95`-Bucket bei AWS.
 
+## Build
+
+### Native
+
+```
+./gradlew clean aotTest nativeCompile -i
+```
+
+Jedoch erzeugt auch `aotTest` keinen Eintrag für Dataset.class in _reflect-config.json_. Aus diesem Grund wird die Klasse explizit mit `@TypeHint` hinzugefügt.
+
+
+
+
 ## Betriebsdokumentation
 Bei jedem Git-Push wird mittels Travis das Docker-Image neu gebildet und als `sogis/cadastral-data-disposal` mit den Tags "Travis-Buildnummer" und "latest" auf Docker Hub abgelegt. Auf der Testumgebung des AGI wird viertelstündlich das latest-Image neu deployed.
 
 ### Credentials / Config
 Mittels Spring Boot `application.properties` resp. ENV-Variablen (AWS-Keys: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY).
+
+### Java
+
+### Native
 
 ### Docker
 ```
