@@ -11,11 +11,11 @@ apply from: "$rootDir/gradle/versioning.gradle"
 group = 'ch.so.agi'
 description = """cadastral data disposal"""
 
-sourceCompatibility = '17'
-targetCompatibility = '17'
+sourceCompatibility = '11'
+targetCompatibility = '11'
 
 compileJava {
-    options.compilerArgs.addAll(['--release', '17'])
+    options.compilerArgs.addAll(['--release', '11'])
 }
 
 bootJar {
@@ -58,59 +58,6 @@ nativeBuild {
     fallback = false
 }
 */
-
-// // Slighly better ("thinner") docker image handling
-// task deleteFilesJarDir(type: Delete) {
-//     delete fileTree("${buildDir}/dependency/")//.listFiles()
-//     delete file("${buildDir}/dependency/")
-// }
-
-// task unzipJar(type: Copy) {
-//     from zipTree(file("${buildDir}/libs/cadastral-data-disposal-"+version+".jar"))
-//     into file("${buildDir}/dependency/")
-// }
-// unzipJar.dependsOn(deleteFilesJarDir)
-// bootJar.finalizedBy(unzipJar)
-
-// // Build docker image
-// import com.bmuschko.gradle.docker.tasks.image.Dockerfile
-// import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
-// import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
-
-// docker {
-//     registryCredentials {
-//         username = System.env.DOCKER_USERNAME
-//         password = System.env.DOCKER_PASSWORD
-//     }
-// }
-
-// task buildDockerImage(type: DockerBuildImage) {
-//     description = "Build docker image."
-//     inputDir = project.projectDir
-//     tags = ["sogis/cadastral-data-disposal:"+ version, "sogis/cadastral-data-disposal:latest"]
-//     labels = ["cadastral-data-disposal.created": new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), 
-//             "cadastral-data-disposal.git_commit":  getCheckedOutGitCommitHash(), 
-//             "cadastral-data-disposal.travis_build": version]
-    
-// }
-
-// task pushDockerImage_One(type: DockerPushImage) {
-//     description = "Push docker image to hub.docker.com (images are UNTESTED)."
-//     imageName = buildDockerImage.tags.get().toArray()[0]
-// }
-
-// task pushDockerImage_Two(type: DockerPushImage) {
-//     description = "Push docker image to hub.docker.com (images are UNTESTED)."
-//     imageName = buildDockerImage.tags.get().toArray()[1]
-// }
-
-// task pushDockerImages() {
-//     description = "Collect all push images tasks."
-// }
-
-// pushDockerImages.dependsOn {
-//     tasks.findAll { task -> task.name.startsWith('pushDockerImage_') }
-// }
 
 import java.text.SimpleDateFormat
 
