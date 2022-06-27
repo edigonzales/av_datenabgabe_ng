@@ -1,17 +1,13 @@
-FROM alpine:3.16
-
-ARG UID=1001
-RUN adduser -S appuser -u $UID
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.5
 
 WORKDIR /work/
 
-RUN chown $UID /work \
+RUN chown 1001 /work \
     && chmod "g+rwX" /work \
-    && chown $UID:root /work
-COPY --chown=$UID:root build/native/nativeCompile/cadastral-data-disposal /work/application
+    && chown 1001:root /work
+COPY --chown=1001:root build/native/nativeCompile/cadastral-data-disposal /work/application
 
-USER $UID
 EXPOSE 8080
+USER 1001
 
-ENV LOG4J_FORMAT_MSG_NO_LOOKUPS=true
 CMD ["./application"]
