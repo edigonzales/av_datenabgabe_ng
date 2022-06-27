@@ -27,7 +27,7 @@ public class CadastralDataDisposalApplicationTests {
 
     @Test
     public void index_Ok() throws Exception {
-        assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/av_datenabgabe/", String.class))
+        assertThat(this.restTemplate.getForObject("http://localhost:" + port, String.class))
                 .contains("Datenabgabe der amtlichen Vermessung");
     }
 
