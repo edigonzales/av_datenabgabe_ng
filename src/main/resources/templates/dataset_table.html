@@ -38,8 +38,9 @@
                 </thead>
                 <tbody>
                     <tr th:each="dataset: ${datasets}">
+                    <!--
                         <td th:text="${dataset.gem_name}">1</td>
-                        <td th:text="${dataset.gem_bfs}">Jack</td>
+                        <td th:text="${dataset.gem_bfs}">Jack</td>-->
                         <td th:text="${dataset.lieferdatum}">23</td>
                         <td th:text="${dataset.nfgeometer}">AVE N</td>
                         <td><a th:href="${dataset.pdf}" target="_blank"><img th:src="@{/images/pdficon_small.png}"/></a></td>

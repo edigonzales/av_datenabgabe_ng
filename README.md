@@ -21,7 +21,7 @@ Umgesetzt wurde die neue Lösung mit Spring Boot. Als Datenquelle wird der Data-
 Bei jedem Git-Push wird mittels Travis das Docker-Image neu gebildet und als `sogis/cadastral-data-disposal` mit den Tags "Travis-Buildnummer" und "latest" auf Docker Hub abgelegt. Auf der Testumgebung des AGI wird viertelstündlich das latest-Image neu deployed.
 
 ### Credentials / Config
-Mittels Spring Boot `application.properties` resp. ENV-Variablen.
+Mittels Spring Boot `application.properties` resp. ENV-Variablen (AWS-Keys: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY).
 
 ### Docker
 ```

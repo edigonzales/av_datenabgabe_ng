@@ -1,8 +1,8 @@
 plugins {
-    id 'org.springframework.boot' version '2.1.9.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.8.RELEASE'    
+    id 'org.springframework.boot' version '2.7.1'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
-    id "com.bmuschko.docker-remote-api" version "4.6.2"
+    id 'org.springframework.experimental.aot' version '0.12.0'
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -11,80 +11,102 @@ apply from: "$rootDir/gradle/versioning.gradle"
 group = 'ch.so.agi'
 description = """cadastral data disposal"""
 
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+sourceCompatibility = '11'
+targetCompatibility = '11'
+
+compileJava {
+    options.compilerArgs.addAll(['--release', '11'])
+}
 
 repositories {
-    jcenter()
+    maven { url 'https://repo.spring.io/release' }
     mavenCentral()
-    //maven { url "http://repository.primefaces.org" }
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    compile group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.11.650'
-    compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.650'
-    //compile group: 'com.vividsolutions', name: 'jts-core', version: '1.14.0'
-    //compile group: 'com.bedatadriven', name: 'jackson-datatype-jts', version: '2.4' 
-    runtime 'org.springframework.boot:spring-boot-starter-actuator' 
+    implementation platform('software.amazon.awssdk:bom:2.17.219')
+    implementation 'software.amazon.awssdk:s3'
+    developmentOnly 'org.springframework.boot:spring-boot-starter-actuator' 
     runtimeOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-// Slighly better ("thinner") docker image handling
-task deleteFilesJarDir(type: Delete) {
-    delete fileTree("${buildDir}/dependency/")//.listFiles()
-    delete file("${buildDir}/dependency/")
+tasks.named('test') {
+    useJUnitPlatform()
 }
 
-task unzipJar(type: Copy) {
-    from zipTree(file("${buildDir}/libs/cadastral-data-disposal-"+version+".jar"))
-    into file("${buildDir}/dependency/")
-}
-unzipJar.dependsOn(deleteFilesJarDir)
-bootJar.finalizedBy(unzipJar)
-
-// Build docker image
-import com.bmuschko.gradle.docker.tasks.image.Dockerfile
-import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
-import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
-
-docker {
-    registryCredentials {
-        username = System.env.DOCKER_USERNAME
-        password = System.env.DOCKER_PASSWORD
-    }
+/*
+springAot {
+    //mode = AotMode.NATIVE_AGENT
+    debugVerify = false
+    removeXmlSupport = false
+    //removeSpelSupport = false
+    removeYamlSupport = false
+    removeJmxSupport = true
+    verify = true
 }
 
-task buildDockerImage(type: DockerBuildImage) {
-    description = "Build docker image."
-    inputDir = project.projectDir
-    tags = ["sogis/cadastral-data-disposal:"+ version, "sogis/cadastral-data-disposal:latest"]
-    labels = ["cadastral-data-disposal.created": new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), 
-            "cadastral-data-disposal.git_commit":  getCheckedOutGitCommitHash(), 
-            "cadastral-data-disposal.travis_build": version]
+nativeBuild {
+    verbose = true
+    fallback = false
+}
+*/
+
+// // Slighly better ("thinner") docker image handling
+// task deleteFilesJarDir(type: Delete) {
+//     delete fileTree("${buildDir}/dependency/")//.listFiles()
+//     delete file("${buildDir}/dependency/")
+// }
+
+// task unzipJar(type: Copy) {
+//     from zipTree(file("${buildDir}/libs/cadastral-data-disposal-"+version+".jar"))
+//     into file("${buildDir}/dependency/")
+// }
+// unzipJar.dependsOn(deleteFilesJarDir)
+// bootJar.finalizedBy(unzipJar)
+
+// // Build docker image
+// import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+// import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+// import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+
+// docker {
+//     registryCredentials {
+//         username = System.env.DOCKER_USERNAME
+//         password = System.env.DOCKER_PASSWORD
+//     }
+// }
+
+// task buildDockerImage(type: DockerBuildImage) {
+//     description = "Build docker image."
+//     inputDir = project.projectDir
+//     tags = ["sogis/cadastral-data-disposal:"+ version, "sogis/cadastral-data-disposal:latest"]
+//     labels = ["cadastral-data-disposal.created": new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), 
+//             "cadastral-data-disposal.git_commit":  getCheckedOutGitCommitHash(), 
+//             "cadastral-data-disposal.travis_build": version]
     
-}
+// }
 
-task pushDockerImage_One(type: DockerPushImage) {
-    description = "Push docker image to hub.docker.com (images are UNTESTED)."
-    imageName = buildDockerImage.tags.get().toArray()[0]
-}
+// task pushDockerImage_One(type: DockerPushImage) {
+//     description = "Push docker image to hub.docker.com (images are UNTESTED)."
+//     imageName = buildDockerImage.tags.get().toArray()[0]
+// }
 
-task pushDockerImage_Two(type: DockerPushImage) {
-    description = "Push docker image to hub.docker.com (images are UNTESTED)."
-    imageName = buildDockerImage.tags.get().toArray()[1]
-}
+// task pushDockerImage_Two(type: DockerPushImage) {
+//     description = "Push docker image to hub.docker.com (images are UNTESTED)."
+//     imageName = buildDockerImage.tags.get().toArray()[1]
+// }
 
-task pushDockerImages() {
-    description = "Collect all push images tasks."
-}
+// task pushDockerImages() {
+//     description = "Collect all push images tasks."
+// }
 
-pushDockerImages.dependsOn {
-    tasks.findAll { task -> task.name.startsWith('pushDockerImage_') }
-}
+// pushDockerImages.dependsOn {
+//     tasks.findAll { task -> task.name.startsWith('pushDockerImage_') }
+// }
 
 import java.text.SimpleDateFormat
 
