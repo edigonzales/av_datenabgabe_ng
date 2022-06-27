@@ -78,7 +78,7 @@ springAot {
 nativeBuild {
     verbose = true
     fallback = false
-    jvmArgs.add("--libc=musl")
+    buildArgs.add("--libc=musl")
 }
 
 
