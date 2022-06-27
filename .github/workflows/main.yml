@@ -40,7 +40,7 @@ jobs:
 
   #     - name: Build native image
   #       run: |
-  #         ./gradlew clean aotTest nativeCompile
+  #         ./gradlew clean aotTest nativeCompile -i
   #         ls -la build/native/nativeCompile/
 
   #     - uses: actions/upload-artifact@v2
