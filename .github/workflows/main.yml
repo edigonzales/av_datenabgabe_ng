@@ -39,8 +39,9 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build native image
+          #./gradlew clean aotTest nativeCompile -i
         run: |
-          ./gradlew clean aotTest nativeCompile -i
+          ./gradlew clean nativeCompile -i
           ls -la build/native/nativeCompile/
 
       - uses: actions/upload-artifact@v2
