@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.nativex.hint.TypeHint;
+import org.springframework.web.filter.ForwardedHeaderFilter;
 import org.springframework.nativex.hint.TypeAccess;
 
 @TypeHint(
@@ -25,4 +26,9 @@ public class CadastralDataDisposalApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CadastralDataDisposalApplication.class, args);
 	}
+	
+    @Bean
+    ForwardedHeaderFilter forwardedHeaderFilter() {
+        return new ForwardedHeaderFilter();
+    }  
 }
