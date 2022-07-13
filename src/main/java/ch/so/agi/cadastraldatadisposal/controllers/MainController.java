@@ -1,10 +1,13 @@
 package ch.so.agi.cadastraldatadisposal.controllers;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import ch.so.agi.cadastraldatadisposal.models.Dataset;
 import ch.so.agi.cadastraldatadisposal.models.Properties;
@@ -68,6 +71,11 @@ public class MainController {
         s3 = S3Client.builder().region(region).build();
     }
     
+    @GetMapping("/ping")
+    public ResponseEntity<String> ping()  {
+        return new ResponseEntity<String>("av_datenabgabe_ng: " + getHost(), HttpStatus.OK);
+    }
+    
     @GetMapping("/")     
     public String show(Model model) {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
@@ -120,18 +128,14 @@ public class MainController {
                 
                 return dataset;
             })
-            .collect(collectingAndThen(toList(), ArrayList<Dataset>::new));
-        
-//        ArrayList<Dataset> datasets = new ArrayList<>();
-//        Dataset dataset =  new Dataset();
-//        dataset.setLieferdatum("23.10.1999");
-//        dataset.setNfgeometer("gaaaaaaa");
-//        datasets.add(dataset);
-//
-//        System.out.println("***"+datasets.size());
+            .collect(collectingAndThen(toList(), ArrayList<Dataset>::new));        
         log.info("End data service request");
 
         model.addAttribute("datasets", datasets);
         return "dataset_table";
+    }
+    
+    private String getHost() {
+        return ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
     }
 }
