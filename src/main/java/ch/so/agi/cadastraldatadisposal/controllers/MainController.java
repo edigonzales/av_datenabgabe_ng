@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import ch.so.agi.cadastraldatadisposal.models.Dataset;
 import ch.so.agi.cadastraldatadisposal.models.Properties;
