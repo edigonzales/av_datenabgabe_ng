@@ -73,7 +73,7 @@ public class MainController {
     
     @GetMapping("/ping")
     public ResponseEntity<String> ping()  {
-        return new ResponseEntity<String>("av_datenabgabe_ng: " + getHost(), HttpStatus.OK);
+        return new ResponseEntity<String>("av_datenabgabe_ng", HttpStatus.OK);
     }
     
     @GetMapping("/")     
@@ -133,9 +133,5 @@ public class MainController {
 
         model.addAttribute("datasets", datasets);
         return "dataset_table";
-    }
-    
-    private String getHost() {
-        return ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
-    }
+    }    
 }
